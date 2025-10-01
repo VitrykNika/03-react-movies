@@ -4,15 +4,13 @@ import styles from "./MovieModal.module.css";
 import type { Movie } from "../../types/movie";
 import { tmdbImg } from "../../utils/image";
 
-interface Props {
-  movie: Movie | null;
+export interface MovieModalProps {
+  movie: Movie;
   onClose: () => void;
 }
 
-export const MovieModal = ({ movie, onClose }: Props) => {
+export const MovieModal = ({ movie, onClose }: MovieModalProps) => {
   useEffect(() => {
-    if (!movie) return;
-
     const onEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
@@ -25,9 +23,7 @@ export const MovieModal = ({ movie, onClose }: Props) => {
       window.removeEventListener("keydown", onEsc);
       document.body.style.overflow = prevOverflow;
     };
-  }, [movie, onClose]);
-
-  if (!movie) return null;
+  }, [onClose]);
 
   const modalRoot = document.getElementById("modal-root");
   if (!modalRoot) return null;
@@ -36,7 +32,6 @@ export const MovieModal = ({ movie, onClose }: Props) => {
     if (e.target === e.currentTarget) onClose();
   };
 
-
   const backdrop = tmdbImg(movie.backdrop_path, "original");
 
   return createPortal(
@@ -44,13 +39,19 @@ export const MovieModal = ({ movie, onClose }: Props) => {
       className={styles.backdrop}
       role="dialog"
       aria-modal="true"
+      aria-label={`${movie.title} details`}
       onClick={handleBackdrop}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") onClose();
+      }}
+      tabIndex={-1}
     >
       <div className={styles.modal}>
         <button
           className={styles.closeButton}
           aria-label="Close modal"
           onClick={onClose}
+          type="button"
         >
           &times;
         </button>
@@ -58,17 +59,16 @@ export const MovieModal = ({ movie, onClose }: Props) => {
         {backdrop ? (
           <img src={backdrop} alt={movie.title} className={styles.image} />
         ) : (
-          
-          <div className={styles.image} />
+          <div className={styles.image} aria-hidden="true" />
         )}
 
         <div className={styles.content}>
-          <h2>{movie.title}</h2>
-          <p>{movie.overview || "No overview."}</p>
-          <p>
+          <h2 className={styles.title}>{movie.title}</h2>
+          <p className={styles.overview}>{movie.overview || "No overview."}</p>
+          <p className={styles.meta}>
             <strong>Release Date:</strong> {movie.release_date || "—"}
           </p>
-          <p>
+          <p className={styles.meta}>
             <strong>Rating:</strong> {movie.vote_average}/10
           </p>
         </div>

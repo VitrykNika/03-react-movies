@@ -2,12 +2,12 @@ import type { Movie } from "../../types/movie";
 import { tmdbImg } from "../../utils/image";
 import styles from "./MovieGrid.module.css";
 
-interface Props {
+export interface MovieGridProps {
   movies: Movie[];
   onSelect: (movie: Movie) => void;
 }
 
-export const MovieGrid = ({ movies, onSelect }: Props) => {
+export const MovieGrid = ({ movies, onSelect }: MovieGridProps) => {
   if (!movies || movies.length === 0) return null;
 
   return (

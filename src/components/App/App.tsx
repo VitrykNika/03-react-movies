@@ -36,7 +36,7 @@ export default function App() {
 
   return (
     <>
-      <SearchBar onSubmit={handleSearch} />
+      <SearchBar onSearch={handleSearch} />
 
       <main className={styles.app}>
       {error ? (
@@ -48,7 +48,12 @@ export default function App() {
       )}
       </main>
       
-      <MovieModal movie={selected} onClose={() => setSelected(null)} />
+     {selected && (
+    <MovieModal
+    movie={selected}
+    onClose={() => setSelected(null)}
+    />
+)}
 
       <Toaster position="top-right" />
     </>
